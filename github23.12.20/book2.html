@@ -1,0 +1,288 @@
+<html>
+    
+<style type="text/css">
+	table.tableizer-table {
+		font-size: 12px;
+		border: 1px solid #CCC; 
+		font-family: Arial, Helvetica, sans-serif;
+	} 
+	.tableizer-table td {
+		padding: 4px;
+		margin: 3px;
+		border: 1px solid #CCC;
+	}
+	.tableizer-table th {
+		background-color: #104E8B; 
+		color: #FFF;
+		font-weight: bold;
+	}
+</style>
+<input type="file" id="fileUpload" />
+<input type="button" id="upload" value="Upload" onclick="Upload()" />
+<hr />
+<div id="dvExcel"></div>
+<hr>
+<div id="dvExcelparse"></div>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
+<script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/shim.js"></script>
+<script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+
+<script type="text/javascript">
+
+
+var to_html = function to_html(workbook) {
+		HTMLOUT.innerHTML = "";
+		workbook.SheetNames.forEach(function(sheetName) {
+			var htmlstr = X.write(workbook, {sheet:sheetName, type:'string', bookType:'html'});
+			HTMLOUT.innerHTML += htmlstr;
+		});
+		return "";
+	};
+    function Upload() {
+        //Reference the FileUpload element.
+        var fileUpload = document.getElementById("fileUpload");
+ 
+        //Validate whether File is valid Excel file.
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+        if (regex.test(fileUpload.value.toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+                var reader = new FileReader();
+ 
+                //For Browsers other than IE.
+                if (reader.readAsBinaryString) {
+                    reader.onload = function (e) {
+                        ProcessExcel(e.target.result);
+                    };
+                    reader.readAsBinaryString(fileUpload.files[0]);
+                } else {
+                    //For IE Browser.
+                    reader.onload = function (e) {
+                        var data = "";
+                        var bytes = new Uint8Array(e.target.result);
+                        for (var i = 0; i < bytes.byteLength; i++) {
+                            data += String.fromCharCode(bytes[i]);
+                        }
+                        ProcessExcel(data);
+                    };
+                    reader.readAsArrayBuffer(fileUpload.files[0]);
+                }
+            } else {
+                alert("This browser does not support HTML5.");
+            }
+        } else {
+            alert("Please upload a valid Excel file.");
+        }
+    };
+    function ProcessExcel(data) {
+        //Read the Excel File data.
+        var workbook = XLSX.read(data, {
+            type: 'binary'
+        });
+ 
+        //Fetch the name of First Sheet.
+        var firstSheet = workbook.SheetNames[0];
+ 
+        //Read all rows from First Sheet into an JSON array.
+        var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+ 
+        //Create a HTML Table element.
+        var table = document.createElement("table");
+        table.border = "1";
+        table.className = "tableizer-table"
+        //Add the header row.
+        var row = table.insertRow(-1);
+ 
+        //Add the header cells.
+        var headerCell = document.createElement("TH");
+        headerCell.innerHTML = "plus 1";
+        row.appendChild(headerCell);
+ 
+        headerCell = document.createElement("TH");
+        headerCell.innerHTML = "Recepient Type";
+        row.appendChild(headerCell);
+ 
+        headerCell = document.createElement("TH");
+        headerCell.innerHTML = "Reason for GAndE";
+        row.appendChild(headerCell);
+
+        headerCell = document.createElement("TH");
+        headerCell.innerHTML = "Recepient details";
+        row.appendChild(headerCell);
+
+        headerCell = document.createElement("TH");
+        headerCell.innerHTML = "Organization";
+        row.appendChild(headerCell);
+
+         
+        headerCell = document.createElement("TH");
+        headerCell.innerHTML = "Role In Organisation";
+        row.appendChild(headerCell);
+
+        headerCell = document.createElement("TH");
+        headerCell.innerHTML = "Associated with plus 1";
+        row.appendChild(headerCell);
+
+        headerCell = document.createElement("TH");
+        headerCell.innerHTML = "Agregated value per Recipient";
+        row.appendChild(headerCell);
+
+
+ 
+        //Add the data rows from Excel file.
+        for (var i = 0; i < excelRows.length; i++) {
+            //Add the data row.
+            
+            
+            if (excelRows[i].Type.localeCompare("Plus 1")) {
+                 plus = "Plus 1(0)";
+                 isplus ="0";
+                if (i<excelRows.length-1 && !excelRows[i+1].Type.localeCompare("Plus 1")){
+                    plus = "Plus 1(1)";
+                    isplus = "1";
+                }
+
+            var row = table.insertRow(-1);
+                //Add the data cells.
+            var cell = row.insertCell(-1);
+            cell.innerHTML = plus;
+ 
+            cell = row.insertCell(-1);
+            cell.innerHTML = excelRows[i].Type;
+ 
+            cell = row.insertCell(-1);
+            cell.innerHTML = excelRows[i].ReasonForGAndE;
+
+            cell = row.insertCell(-1);
+            
+            cell.innerHTML = excelRows[i].Forename.concat(" ".concat(excelRows[i].Surname));
+
+            cell = row.insertCell(-1);
+            cell.innerHTML = excelRows[i].Organization;
+
+            cell = row.insertCell(-1);
+            cell.innerHTML = excelRows[i].Role;
+
+            cell = row.insertCell(-1);
+            cell.innerHTML = isplus;
+
+            cell = row.insertCell(-1);
+            cell.innerHTML = "0.0$";
+
+            }
+        else {
+
+            var row = table.insertRow(-1);
+            var cell1 = row.insertCell(0);
+            cell1.style.visibility = "hidden"
+            var cell2 = row.insertCell(1);
+            cell2.innerHTML = "Forename"
+            
+            var cell1 = row.insertCell(2);
+            
+            var cell1 = row.insertCell(3);
+            cell1.innerHTML = "surname"
+
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+
+
+
+
+
+                //Add the data cells.
+            
+            var row = table.insertRow(-1);
+            var cell = row.insertCell(-1);
+            cell.style.visibility = "hidden"
+ 
+            cell = row.insertCell(-1);
+            cell.innerHTML = excelRows[i].Forename;
+            
+            var cell = row.insertCell(-1);
+            cell.innerHTML = "";
+            
+            cell = row.insertCell(-1);
+            cell.innerHTML = excelRows[i].Surname;
+            
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+
+            row = table.insertRow(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+            }
+            
+ 
+        }
+        var dvExcel = document.getElementById("dvExcel");
+        dvExcel.innerHTML = "";
+        dvExcel.appendChild(table);
+    };
+
+    function parseExcel(data) {
+        //Read the Excel File data.
+        var workbook = XLSX.read(data, {
+            type: 'binary'
+        });
+ 
+        //Fetch the name of First Sheet.
+        var firstSheet = workbook.SheetNames[0];
+ 
+        //Read all rows from First Sheet into an JSON array.
+        var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+ 
+        //Create a HTML Table element.
+        var table = document.createElement("table");
+        table.border = "1";
+ 
+        //Add the header row.
+        var row = table.insertRow(-1);
+ 
+        //Add the header cells.
+        var headerCell = document.createElement("TH");
+        headerCell.innerHTML = "Id";
+        row.appendChild(headerCell);
+ 
+        headerCell = document.createElement("TH");
+        headerCell.innerHTML = "Name";
+        row.appendChild(headerCell);
+ 
+        headerCell = document.createElement("TH");
+        headerCell.innerHTML = "Country";
+        row.appendChild(headerCell);
+ 
+        //Add the data rows from Excel file.
+        for (var i = 0; i < excelRows.length; i++) {
+            //Add the data row.
+            var row = table.insertRow(-1);
+ 
+            //Add the data cells.
+            var cell = row.insertCell(-1);
+            cell.innerHTML = excelRows[i].Id;
+ 
+            cell = row.insertCell(-1);
+            cell.innerHTML = excelRows[i].Name;
+ 
+            cell = row.insertCell(-1);
+            cell.innerHTML = excelRows[i].Country;
+        }
+ 
+        var dvExcel = document.getElementById("dvExcel");
+        dvExcel.innerHTML = "";
+        dvExcel.appendChild(table);
+    };
+</script>
+</html>
