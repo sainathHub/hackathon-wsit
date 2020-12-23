@@ -40,7 +40,7 @@ var to_html = function to_html(workbook) {
 			HTMLOUT.innerHTML += htmlstr;
 		});
 		return "";
-	};
+    };
     function Upload() {
         //Reference the FileUpload element.
         var fileUpload = document.getElementById("fileUpload");
@@ -87,8 +87,9 @@ var to_html = function to_html(workbook) {
  
         //Read all rows from First Sheet into an JSON array.
         var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
- 
+
         //Create a HTML Table element.
+
         var table = document.createElement("table");
         table.border = "1";
         table.className = "tableizer-table"
@@ -128,6 +129,12 @@ var to_html = function to_html(workbook) {
         headerCell = document.createElement("TH");
         headerCell.innerHTML = "Agregated value per Recipient";
         row.appendChild(headerCell);
+
+        
+        headerCell = document.createElement("TH");
+        headerCell.innerHTML = "index";
+        row.appendChild(headerCell);
+
 
 
  
@@ -213,20 +220,9 @@ var to_html = function to_html(workbook) {
             row.insertCell(-1);
             row.insertCell(-1);
             row.insertCell(-1);
-
-            row = table.insertRow(-1);
-            row.insertCell(-1);
-            row.insertCell(-1);
-            row.insertCell(-1);
-            row.insertCell(-1);
-            row.insertCell(-1);
-            row.insertCell(-1);
-            row.insertCell(-1);
-            row.insertCell(-1);
-            }
-            
  
         }
+    }
         var dvExcel = document.getElementById("dvExcel");
         dvExcel.innerHTML = "";
         dvExcel.appendChild(table);
