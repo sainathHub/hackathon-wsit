@@ -1,5 +1,7 @@
-<html>
-    
+ <html>
+<head>
+
+</head>
 <style type="text/css">
 	table.tableizer-table {
 		font-size: 12px;
@@ -17,6 +19,7 @@
 		font-weight: bold;
 	}
 </style>
+
 <input type="file" id="fileUpload" />
 <input type="button" id="upload" value="Upload" onclick="Upload()" />
 <hr />
@@ -40,8 +43,8 @@ var to_html = function to_html(workbook) {
 			HTMLOUT.innerHTML += htmlstr;
 		});
 		return "";
-    };
-    function Upload() {
+};
+function Upload() {
         //Reference the FileUpload element.
         var fileUpload = document.getElementById("fileUpload");
  
@@ -76,21 +79,8 @@ var to_html = function to_html(workbook) {
             alert("Please upload a valid Excel file.");
         }
     };
-    function ProcessExcel(data) {
-        //Read the Excel File data.
-        var workbook = XLSX.read(data, {
-            type: 'binary'
-        });
- 
-        //Fetch the name of First Sheet.
-        var firstSheet = workbook.SheetNames[0];
- 
-        //Read all rows from First Sheet into an JSON array.
-        var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
-
-        //Create a HTML Table element.
-
-        var table = document.createElement("table");
+function createTable() {
+    var table = document.createElement("table");
         table.border = "1";
         table.className = "tableizer-table"
         //Add the header row.
@@ -134,78 +124,48 @@ var to_html = function to_html(workbook) {
         headerCell = document.createElement("TH");
         headerCell.innerHTML = "index";
         row.appendChild(headerCell);
-
-
-
- 
-        //Add the data rows from Excel file.
-        for (var i = 0; i < excelRows.length; i++) {
-            //Add the data row.
-            
-            
-            if (excelRows[i].Type.localeCompare("Plus 1")) {
-                 plus = "Plus 1(0)";
-                 isplus ="0";
-                if (i<excelRows.length-1 && !excelRows[i+1].Type.localeCompare("Plus 1")){
-                    plus = "Plus 1(1)";
-                    isplus = "1";
-                }
-
+        return table;
+    }
+var index = 1;
+    function add_nonplus(table, excelRows,  i){
+            isplus = 0;
+            pluscount = 0;
+            for (var j=i+1; j<excelRows.length && excelRows[j].Type.includes("Plus 1"); ++j, pluscount++ );
             var row = table.insertRow(-1);
                 //Add the data cells.
+            if (pluscount > 0){
+                isplus = 1;
+            }
+                
             var cell = row.insertCell(-1);
-            cell.innerHTML = plus;
- 
+            cell.innerHTML = "plus 1"+ "\(" + pluscount + "\)";
             cell = row.insertCell(-1);
             cell.innerHTML = excelRows[i].Type;
- 
             cell = row.insertCell(-1);
             cell.innerHTML = excelRows[i].ReasonForGAndE;
-
             cell = row.insertCell(-1);
-            
             cell.innerHTML = excelRows[i].Forename.concat(" ".concat(excelRows[i].Surname));
-
             cell = row.insertCell(-1);
             cell.innerHTML = excelRows[i].Organization;
-
             cell = row.insertCell(-1);
             cell.innerHTML = excelRows[i].Role;
-
             cell = row.insertCell(-1);
             cell.innerHTML = isplus;
-
             cell = row.insertCell(-1);
             cell.innerHTML = "0.0$";
+            cell = row.insertCell(-1);
+            cell.innerHTML = index;
 
-            }
-        else {
+            index++;
 
-            var row = table.insertRow(-1);
-            var cell1 = row.insertCell(0);
-            cell1.style.visibility = "hidden"
-            var cell2 = row.insertCell(1);
-            cell2.innerHTML = "Forename"
-            
-            var cell1 = row.insertCell(2);
-            
-            var cell1 = row.insertCell(3);
-            cell1.innerHTML = "surname"
+            return pluscount;
+    };
 
-            row.insertCell(-1);
-            row.insertCell(-1);
-            row.insertCell(-1);
-            row.insertCell(-1);
-
-
-
-
-
-                //Add the data cells.
-            
-            var row = table.insertRow(-1);
+    function add_plus1(table, excelRows, i) {
+        
+        var row = table.insertRow(-1);
             var cell = row.insertCell(-1);
-            cell.style.visibility = "hidden"
+            cell.style.visibility = "hidden";
  
             cell = row.insertCell(-1);
             cell.innerHTML = excelRows[i].Forename;
@@ -220,9 +180,65 @@ var to_html = function to_html(workbook) {
             row.insertCell(-1);
             row.insertCell(-1);
             row.insertCell(-1);
- 
-        }
+
+    };
+
+
+    function add_header(table){
+        var row = table.insertRow(-1);
+            var cell1 = row.insertCell(0);
+            cell1.style.visibility = "hidden";
+            var cell2 = row.insertCell(1);
+            cell2.innerHTML = "Forename";
+            
+            var cell1 = row.insertCell(2);
+            
+            var cell1 = row.insertCell(3);
+            cell1.innerHTML = "surname";
+
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
+            row.insertCell(-1);
     }
+
+
+    function ProcessExcel(data) {
+        //Read the Excel File data.
+        var workbook = XLSX.read(data, {
+            type: 'binary'
+        });
+ 
+        //Fetch the name of First Sheet.
+        var firstSheet = workbook.SheetNames[0];
+ 
+        //Read all rows from First Sheet into an JSON array.
+        var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+
+        //Create a HTML Table element.
+        var table = createTable();
+        console.log("created table");
+        //Add the data rows from Excel file.
+        for (var i = 0; i < excelRows.length && typeof excelRows[i].Type != "undefined"; i++) {
+            //Add the data row.
+            var pluscount = 0;
+            
+            if (!excelRows[i].Type.includes("Plus 1")) {
+                pluscount = add_nonplus(table, excelRows,i);
+                console.log("created nonplus");
+
+            }
+  
+            if (pluscount > 0 ) {
+                add_header(table);
+                i++;
+                for (var j=0; j<pluscount; j++,i++) {
+                 add_plus1(table, excelRows, i);
+                 console.log("created plus1");
+                } 
+                i--;  
+            }
+        }
         var dvExcel = document.getElementById("dvExcel");
         dvExcel.innerHTML = "";
         dvExcel.appendChild(table);
@@ -280,5 +296,6 @@ var to_html = function to_html(workbook) {
         dvExcel.innerHTML = "";
         dvExcel.appendChild(table);
     };
+
 </script>
 </html>
