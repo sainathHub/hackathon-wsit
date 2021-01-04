@@ -6,7 +6,7 @@
 <title>Drag and Drop File Uploading</title>
 
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="stylesheet" href="main.css" />
+<link rel="stylesheet" href="static\css\main.css" />
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
 <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/shim.js"></script>
@@ -52,7 +52,7 @@
         <div class="container">
           <div class="logo-box">
             <a href="/">
-              <img src="Hsbc_logo_PNG2.png" style="width: 150px; height:auto; margin-top: 15px;">
+              <img src="static\images\Hsbc_logo_PNG2.png" style="width: 75px; height:auto;">
             </a>
             
           </div>
@@ -68,7 +68,7 @@
         </nav>
         </div>
       </header>
-<div><img src="gift1.jpg" alt="" style="width: 100%; height:auto;"></div>   
+<div><img src="static\images\gift1.jpg" alt="" style="width: 100%; height:auto;"></div>   
 <div class="container" role="main">
 <h1><a href="/article-url"></a></h1>
 <p><strong>Upload the recepient data To get the processed data displayed .</p>
@@ -83,20 +83,23 @@
 <div class="box__success">Done! <a href="#" class="box__restart" role="button">Upload more?</a></div>
 <div class="box__error">Error! <span></span>. <a href="#" class="box__restart" role="button">Try again!</a></div>
 
-<div id="dvExcel" style="display:none;">Table</div>
+<div id="dvExcel" style="display:none;">Recepients Data</div>
 </form>
  <hr>
 
 <button id = "Submit" class="button " Type="button"  onclick="Upload(filesdata,true);">Process sheet</button>
 <hr>
 
-<div id="dvparsed">Table</div>
+<div id="dvparsed">Processed Table</div>
 </div>
+<hr style="margin:0px, 40px">
+<div style="height:50px;"></div>
+
 <footer>
 
 </footer>
 
-<script src = "myscript2.js"></script>
+<script src = "static\scripts\myscript2.js"></script>
 <!-- <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"rayId":"608c76d0be23e129","version":"2020.12.2","si":10}'></script> -->
 </body>
 </html>

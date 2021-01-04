@@ -1,4 +1,4 @@
-'use strict';
+  'use strict';
 	var filesdata;
 
 	
@@ -121,13 +121,14 @@
 var to_html = (workbook) => {
 	var HTMLOUT = document.getElementById("dvExcel")
 	HTMLOUT.visibility = "hidden";
-	HTMLOUT.innerHTML = "";
+	HTMLOUT.innerHT
+	ML = "";
 	workbook.SheetNames.forEach(function (sheetName) {
 		var htmlstr = XLSX.write(workbook, { sheet: sheetName, type: 'string', bookType: 'html' });
 		HTMLOUT.innerHTML += htmlstr;
 	});
 	var table = document.getElementsByClassName('div.table')
-	table.className = 'tablelizer-table';
+	table.className = 'tablelizer-table table1';
 	console.log(HTMLOUT)
 	return "HTMLOUT";
 };
@@ -175,12 +176,14 @@ function Upload(flag) {
 function createTable(flag) {
 	var table = document.createElement("table");
 		table.border = "1";
-		table.className = "tableizer-table"
+		table.className = "tableizer-table table1"
+		
 		//Add the header row.
 		var row = table.insertRow(-1);
  
 		//Add the header cells.
-		if(flag==0){
+	if(flag==0){
+		table.className = "tableizer-table table2"
 		var headerCell = document.createElement("TH");
 		headerCell.innerHTML = "plus 1";
 		row.appendChild(headerCell);
@@ -258,8 +261,8 @@ var index = 1;
 			cell.innerHTML = isplus;
 			cell = row.insertCell(-1);
 			cell.innerHTML = "0.0$";
-			cell = row.insertCell(-1);
-			cell.innerHTML = index;
+			// cell = row.insertCell(-1);
+			// cell.innerHTML = index;
 
 			index++;
 
@@ -353,6 +356,20 @@ var index = 1;
 		console.log(table);
         sortTable(table);
         console.log(table)
+
+        var rows = table.rows;
+        for (var i=1,j=1; i<rows.length; ++i){
+            var row = rows[i].cells;
+            console.log(row[0].innerHTML);
+            if (typeof row[0].innerHTML != "undefined" && row[0].innerHTML.includes('plus')){
+                
+                var cell =  rows[i].insertCell(-1);
+
+                cell.innerHTML = j;
+                j++;
+            }
+        
+        }   
 		var dvparsed = document.getElementById("dvparsed");
 		dvparsed.innerHTML = "";
 		dvparsed.appendChild(table);
@@ -374,11 +391,11 @@ var index = 1;
                         var Switch = false; 
   
                         // Fetch 2 elements that need to be compared 
-                        x = rows[i].getElementsByTagName("TD")[0]; 
-                        y = rows[i + 1].getElementsByTagName("TD")[0]; 
+                        x = rows[i].id; 
+                        y = rows[i + 1].id; 
   
                         // Check if 2 rows need to be switched 
-                        if (x.id.toLowerCase() > y.id.toLowerCase()) 
+                        if (x > y )
                             { 
   
                             // If yes, mark Switch as needed and break loop 

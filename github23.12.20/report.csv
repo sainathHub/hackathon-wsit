@@ -1,6 +1,13 @@
-Type,ReasonForGAndE,Forename,Surname,Organization,Role,location in web sheet
-Non-Public Official,Coorperate Banking Relationship,Tom Chan,ABC Company,CFO,0
-Plus 1,Chris,Chan,1
-Public Official,Coorperate Banking Relationship,Angel Tang,XYZ Company,COO,2
-Non-Public Official,Coorperate Banking Relationship,Paul Lee,DEF Company,CEO,3
-Plus 1,Edith,Ng,4
+Type,ReasonForGAndE,name,Organization,Role,mappingindex
+Non-Public Official,Coorperate Banking Relationship,Tom Chan,ABC Company,CFO,3
+Plus 1,Chris,Chan
+Non-Public Official,Coorperate Banking Relationship,Tom Chan,ABC Company,CFO,3
+Plus 1,Chris,Chan
+Public Official,Coorperate Banking Relationship,Angel Tang,XYZ Company,COO,4
+Public Official,Coorperate Banking Relationship,Angel Tang,XYZ Company,COO,4
+
+MISSED
+"['Non-Public Official', 'Coorperate Banking', 'Paul Lee', 'DEF Company', 'CEO', 2]","['Plus 1', 'Edith', 'Ng', ' ', ' ', ' ']"
+"['Non-Public Official', 'Coorperate Banking', 'Paul Lee', 'DEF Company', 'CEO', 5]","['Plus 1', 'Edith', 'Ng', ' ', ' ', ' ']","['Plus 1', 'Edith', 'Ng', ' ', ' ', ' ']"
+
+Outliers
